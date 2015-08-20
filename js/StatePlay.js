@@ -12,38 +12,23 @@ var statePlay = {
         this.controlKeyboard                = game.input.keyboard.createCursorKeys();
 
         this.seCoin                         = game.add.audio('SECoin');
-
+;
         //A function to create coin object in the scene.
-        this.ObjectCoinCreate();
+        this.ObjectCreateCoin();
+        //A function to create bullet object in scene.
+        this.ObjectCreateBullet()
         //A function to create player object in the scene.
         this.ObjectPlayerCreate();
 
-
-
-
-        //PROTOTYPE: Bullet fire on key press.
-        this.bulletFireRate                     = 100;
-        this.bulletNextFire                     = 0;
-        this.objectGroupBullet                  = game.add.group();
-        this.objectGroupBullet.createMultiple   (50, 'ImageBullet');
-        this.objectGroupBullet.setAll           ('checkWorldBounds', true);
-        this.objectGroupBullet.setAll           ('outOfBoundsKill', true);
-        game.physics.arcade.enable              (this.objectGroupBullet);
-        this.objectGroupBullet.enableBody       = true;
-
-
-
-
+        //A function to create range line graphics in scene.
+        this.GraphicsCreateRangeLine();
 
     },
 
     preRender:                      function(){
 
-        //Codes to adjust this.graphicsRangeLine position according this.objectPlayer position.
-        this.graphicsRangeLine.x                = this.objectPlayer.x + (this.objectPlayer.width/2);
-        this.graphicsRangeLine.y                = this.objectPlayer.y + (this.objectPlayer.height/2);
-        this.graphicsRangeLine.rotation         = game.physics.arcade.angleToPointer(this.graphicsRangeLine);
-        this.graphicsRangeLine.width            = this.rangeLineLength;
+        //A function to update range line (position, rotation, width).
+        this.GraphicsUpdateRangeLine();
 
     },
 
@@ -51,28 +36,12 @@ var statePlay = {
 
         //A function to handle objects collision within the scene.
         this.CollisionObject();
-        //A function to update player (movement, weapon range, etc).
-        this.ObjectPlayerUpdate();
+        //A function to update bullet (range control, recycle, spawn).
+        this.ObjectUpdateBullet();
+        //A function to update player (movement, weapon range).
+        this.ObjectUpdatePlayer();
         //A function to handle objects overlap within the scene.
         this.OverlapObject();
-
-
-
-        if(game.input.activePointer.leftButton.isDown) { this.FireBullet() }
-        console.log(50 - this.objectGroupBullet.countDead());
-        //console.log(this.objectGroupCoin.countDead());
-        var playerX = this.objectPlayer.x + 16;
-        var playerY = this.objectPlayer.y + 16;
-        this.objectGroupBullet.forEachExists(
-            function(_bullet){
-                var distance = Math.sqrt(Math.pow((playerX - _bullet.x), 2) + Math.pow((playerY - _bullet.y), 2));
-                if(distance >= 100){ _bullet.kill(); }
-            }
-        );
-
-
-
-
 
     },
 
@@ -110,16 +79,37 @@ var statePlay = {
 
         if (game.time.now > this.bulletNextFire && this.objectGroupBullet.countDead() > 0){
 
-            this.bulletNextFire     = game.time.now + this.bulletFireRate;
+            this.bulletNextFire         = game.time.now + this.bulletFireRate;
 
-            var bullet              = this.objectGroupBullet.getFirstDead();
-            bullet.body.allowGravity= false;
-            bullet.reset            (this.objectPlayer.x + 16, this.objectPlayer.y + 16);
-            bullet.anchor.setTo     (0.5, 0.5);
+            var bullet                  = this.objectGroupBullet.getFirstDead();
+            bullet.body.allowGravity    = false;
+            bullet.anchor.setTo         (0.5, 0.5);
+            bullet.reset                (this.objectPlayer.x + 16, this.objectPlayer.y + 16);
+            bullet.rotation             = game.physics.arcade.angleToPointer(this.graphicsRangeLine);
 
             game.physics.arcade.moveToPointer(bullet, 600);
 
         }
+
+    },
+
+    GraphicsCreateRangeLine:        function(){
+
+        //this.rangeLineLength will be dependent to what weapon player equip.
+        this.rangeLineLength                    = 100;
+        this.graphicsRangeLine                  = game.add.graphics(this.objectPlayer.x, this.objectPlayer.y);
+        this.graphicsRangeLine.lineStyle        (1, 0xDF7126, 1);
+        this.graphicsRangeLine.moveTo           (0, 0);
+        this.graphicsRangeLine.lineTo           (this.rangeLineLength, 0);
+
+    },
+
+    GraphicsUpdateRangeLine:        function(){
+
+        this.graphicsRangeLine.x                = this.objectPlayer.x + (this.objectPlayer.width/2);
+        this.graphicsRangeLine.y                = this.objectPlayer.y + (this.objectPlayer.height/2);
+        this.graphicsRangeLine.rotation         = game.physics.arcade.angleToPointer(this.graphicsRangeLine);
+        this.graphicsRangeLine.width            = this.rangeLineLength;
 
     },
 
@@ -133,7 +123,47 @@ var statePlay = {
 
     },
 
-    ObjectCoinCreate:               function(){
+    ObjectCreateBullet:             function(){
+
+        //this.bulletButtonPressed is a variable to control mouse button 'justPressed'.
+        //As far as I know, there is no 'justPressed' boolean built inside Phaser.
+        this.bulletButtonPressed                = true;
+        this.bulletFireRate                     = 100;
+        this.bulletNextFire                     = 0;
+        this.objectGroupBullet                  = game.add.group();
+        this.objectGroupBullet.createMultiple   (50, 'ImageBullet');
+        this.objectGroupBullet.setAll           ('checkWorldBounds', true);
+        this.objectGroupBullet.setAll           ('outOfBoundsKill', true);
+        game.physics.arcade.enable              (this.objectGroupBullet);
+        this.objectGroupBullet.enableBody       = true;
+
+    },
+
+    ObjectUpdateBullet:             function(){
+
+        if(game.input.activePointer.leftButton.isDown && this.bulletButtonPressed){
+            this.FireBullet();
+            this.bulletButtonPressed = false;
+        }
+        else if(!game.input.activePointer.leftButton.isDown){
+            this.bulletButtonPressed = true;
+        }
+
+        var playerX             = this.objectPlayer.x + 16;
+        var playerY             = this.objectPlayer.y + 16;
+
+        this.objectGroupBullet.forEachExists(
+            function(_bullet){
+
+                var distance            = Math.sqrt(Math.pow((playerX - _bullet.x), 2) + Math.pow((playerY - _bullet.y), 2));
+                if(distance >= 100)     { _bullet.kill(); }
+
+            }
+        );
+
+    },
+
+    ObjectCreateCoin:               function(){
 
         var findObjectsCoin                 = this.FindGameObjectsByType('LayerObject', this.tmMap, 'coin');
         this.objectGroupCoin                = game.add.group();
@@ -158,17 +188,10 @@ var statePlay = {
         this.objectPlayer.enabledBody           = true;
         game.physics.arcade.enable              (this.objectPlayer);
 
-        //Codes to draw a line of player's weapon range.
-        //this.rangeLength will be dependent to what weapon player equip.
-        this.rangeLineLength                    = 100;
-        this.graphicsRangeLine                  = game.add.graphics(this.objectPlayer.x, this.objectPlayer.y);
-        this.graphicsRangeLine.lineStyle        (1, 0xDF7126, 1);
-        this.graphicsRangeLine.moveTo           (0, 0);
-        this.graphicsRangeLine.lineTo           (this.rangeLineLength, 0);
 
     },
 
-    ObjectPlayerUpdate:             function(){
+    ObjectUpdatePlayer:             function(){
 
         if      (game.input.keyboard.isDown(Phaser.Keyboard.A)) { this.objectPlayer.body.velocity.x = -200; }
         else if (game.input.keyboard.isDown(Phaser.Keyboard.D)) { this.objectPlayer.body.velocity.x = 200; }
