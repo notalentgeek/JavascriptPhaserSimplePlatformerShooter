@@ -1,7 +1,7 @@
 {
     "webexe_settings": {
         "linux-x32": false, 
-        "export_dir": "output", 
+        "export_dir": "C:\\xampp\\htdocs\\M\\ProjectsPhaser\\PhaserSimplePlatformerShooter\\output", 
         "windows-x64": true, 
         "download_dir": "C:\\Program Files (x86)\\Web2Exe", 
         "nw_compression_level": 0, 
@@ -57,6 +57,6 @@
     "inject-js-start": "", 
     "node-remote": "", 
     "main": "index.html", 
-    "app_name": "PhaserSimplePlatformer2", 
+    "app_name": "PhaserSimplePlatformer", 
     "name": "phasersimpleplatformer2"
 }
