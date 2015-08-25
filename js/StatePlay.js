@@ -137,7 +137,6 @@ var statePlay = {
         this.objectGroupBullet.enableBody       = true;
 
     },
-
     ObjectUpdateBullet:             function(){
 
         if(game.input.activePointer.leftButton.isDown && this.bulletButtonPressed){
@@ -180,10 +179,9 @@ var statePlay = {
     ObjectCreatePlayer:             function(){
 
         var findObjectsPlayer                   = this.FindGameObjectsByType('LayerObject', this.tmMap, 'playerPortal');
-        this.objectPlayer                       = new ObjectPlayer(game, findObjectsPlayer[0].x, findObjectsPlayer[0].y, 'ImagePlayer');
+        this.objectPlayer                       = new ObjectPlayer(findObjectsPlayer[0].x, findObjectsPlayer[0].y);
 
     },
-
     ObjectUpdatePlayer:             function(){ this.objectPlayer.Update(); },
 
     OverlapObject:                  function(){
