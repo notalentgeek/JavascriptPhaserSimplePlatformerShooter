@@ -9,16 +9,15 @@ var statePlay = {
         this.tmMap.setCollisionByExclusion  ([0], true, 'LayerBlock');
         this.layerBackground                = this.tmMap.createLayer('LayerBackground');
         this.layerBlock                     = this.tmMap.createLayer('LayerBlock');
-        this.controlKeyboard                = game.input.keyboard.createCursorKeys();
 
         this.seCoin                         = game.add.audio('SECoin');
-;
+
         //A function to create coin object in the scene.
         this.ObjectCreateCoin();
         //A function to create bullet object in scene.
-        this.ObjectCreateBullet()
+        this.ObjectCreateBullet();
         //A function to create player object in the scene.
-        this.ObjectPlayerCreate();
+        this.ObjectCreatePlayer();
 
         //A function to create range line graphics in scene.
         this.GraphicsCreateRangeLine();
@@ -181,30 +180,14 @@ var statePlay = {
 
     },
 
-    ObjectPlayerCreate:             function(){
+    ObjectCreatePlayer:             function(){
 
         var findObjectsPlayer                   = this.FindGameObjectsByType('LayerObject', this.tmMap, 'playerPortal');
-        this.objectPlayer                       = game.add.sprite(findObjectsPlayer[0].x, findObjectsPlayer[0].y, 'ImagePlayer');
-        this.objectPlayer.enabledBody           = true;
-        game.physics.arcade.enable              (this.objectPlayer);
-
+        this.objectPlayer                       = new ObjectPlayer(game, findObjectsPlayer[0].x, findObjectsPlayer[0].y, 'ImagePlayer');
 
     },
 
-    ObjectUpdatePlayer:             function(){
-
-        if      (game.input.keyboard.isDown(Phaser.Keyboard.A)) { this.objectPlayer.body.velocity.x = -200; }
-        else if (game.input.keyboard.isDown(Phaser.Keyboard.D)) { this.objectPlayer.body.velocity.x = 200; }
-        else                                                    { this.objectPlayer.body.velocity.x = 0; }
-
-        if(
-
-            game.input.keyboard.isDown(Phaser.Keyboard.W) &&
-            this.objectPlayer.body.onFloor()
-
-        ){ this.objectPlayer.body.velocity.y = -500; }
-
-    },
+    ObjectUpdatePlayer:             function(){ this.objectPlayer.Update(); },
 
     OverlapObject:                  function(){
 
