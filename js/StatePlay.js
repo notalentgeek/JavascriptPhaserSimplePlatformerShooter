@@ -183,7 +183,7 @@ var statePlay = {
     ObjectCreatePlayer:             function(){
 
         var findObjectsPlayer                   = this.FindGameObjectsByType('LayerObject', this.tmMap, 'playerPortal');
-        this.objectPlayer                       = new Player(game, {x: findObjectsPlayer[0].x, y: findObjectsPlayer[0].y});
+        this.objectPlayer                       = objectPlayer.Create(findObjectsPlayer[0].x, findObjectsPlayer[0].y);
 
     },
 
