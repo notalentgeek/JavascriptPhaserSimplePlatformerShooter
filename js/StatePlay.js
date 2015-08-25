@@ -37,10 +37,11 @@ var statePlay = {
         this.CollisionObject();
         //A function to update bullet (range control, recycle, spawn).
         this.ObjectUpdateBullet();
-        //A function to update player (movement, weapon range).
-        this.ObjectUpdatePlayer();
         //A function to handle objects overlap within the scene.
         this.OverlapObject();
+
+        //A function to update player (movement, weapon range).
+        this.objectPlayer.Update();
 
     },
 
@@ -182,7 +183,7 @@ var statePlay = {
         this.objectPlayer                       = new ObjectPlayer(findObjectsPlayer[0].x, findObjectsPlayer[0].y);
 
     },
-    ObjectUpdatePlayer:             function(){ this.objectPlayer.Update(); },
+    ObjectUpdatePlayer:             function(){  },
 
     OverlapObject:                  function(){
 
