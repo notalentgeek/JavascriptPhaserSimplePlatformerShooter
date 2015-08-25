@@ -183,11 +183,11 @@ var statePlay = {
     ObjectCreatePlayer:             function(){
 
         var findObjectsPlayer                   = this.FindGameObjectsByType('LayerObject', this.tmMap, 'playerPortal');
-        this.objectPlayer                       = objectPlayer.Create(findObjectsPlayer[0].x, findObjectsPlayer[0].y);
+        this.objectPlayer                       = new ObjectPlayer(game, findObjectsPlayer[0].x, findObjectsPlayer[0].y, 'ImagePlayer');
 
     },
 
-    ObjectUpdatePlayer:             function(){ this.objectPlayer.update(); },
+    ObjectUpdatePlayer:             function(){ this.objectPlayer.Update(); },
 
     OverlapObject:                  function(){
 
