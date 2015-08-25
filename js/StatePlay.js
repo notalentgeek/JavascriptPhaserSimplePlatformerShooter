@@ -166,15 +166,12 @@ var statePlay = {
 
         var findObjectsCoin                 = this.FindGameObjectsByType('LayerObject', this.tmMap, 'coin');
         this.objectGroupCoin                = game.add.group();
-        this.objectGroupCoin.enableBody     = true;
         this.objectArrayCoin                = new Array(findObjectsCoin.length);
 
         for(var i = 0; i < findObjectsCoin.length; i ++){
 
-            this.objectArrayCoin[i]                 = this.objectGroupCoin.create(findObjectsCoin[i].x, findObjectsCoin[i].y, 'ImageCoin');
-            game.physics.arcade.enable              (this.objectArrayCoin[i]);
-            this.objectArrayCoin[i].body.immovable  = true;
-            this.objectArrayCoin[i].body.moves      = false;
+            this.objectArrayCoin[i]                 = new ObjectCoin(game, findObjectsCoin[i].x, findObjectsCoin[i].y, 'ImageCoin');
+            this.objectGroupCoin.add                (this.objectArrayCoin[i]);
 
         }
 

@@ -6,7 +6,9 @@ ObjectPlayer                            = function (_game, _x, _y, _sprite) {
 
     this.speed                          = 200;
     this.speedJump                      = -500;
-    this.enabledBody                    = true;
+
+    this.enableBody                     = true;
+    
     this.game.physics.arcade.enable     (this);
     this.game.add.existing              (this);
 
