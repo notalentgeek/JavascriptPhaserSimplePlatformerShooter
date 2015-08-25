@@ -1,17 +1,7 @@
-ObjectCoin                          = function(_game, _x, _y, _sprite){
+ObjectCoin                              = function(_x, _y){
 
-    this.game = _game;
-
-    Phaser.Sprite.call(this, this.game, _x, _y, _sprite);
-
-    this.enableBody                     = true;
-
-    this.game.physics.arcade.enable     (this);
-    this.body.immovable                 = true;
-    this.body.moves                     = false;
-    
-    this.game.add.existing              (this);
+    ObjectPhysics.call                  (_x, _y, 'ImageCoin');
 
 };
-ObjectCoin.prototype                = Object.create(Phaser.Sprite.prototype);
+ObjectCoin.prototype                = Object.create(ObjectPhysics.prototype);
 ObjectCoin.prototype.constructor    = ObjectCoin;

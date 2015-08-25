@@ -170,7 +170,7 @@ var statePlay = {
 
         for(var i = 0; i < findObjectsCoin.length; i ++){
 
-            this.objectArrayCoin[i]                 = new ObjectCoin(game, findObjectsCoin[i].x, findObjectsCoin[i].y, 'ImageCoin');
+            this.objectArrayCoin[i]                 = new ObjectCoin(findObjectsCoin[i].x, findObjectsCoin[i].y);
             this.objectGroupCoin.add                (this.objectArrayCoin[i]);
 
         }
