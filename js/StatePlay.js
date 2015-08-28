@@ -33,7 +33,7 @@ var statePlay = {
         this.graphicsRangeLineEnemy             = game.add.graphics(this.objectEnemy.x, this.objectEnemy.y);
         this.graphicsRangeLineEnemy.lineStyle   (1, 0xDF7126, 1);
         this.graphicsRangeLineEnemy.moveTo      (0, 0);
-        this.graphicsRangeLineEnemy.lineTo      (this.rangeLineLength, 0);
+        this.graphicsRangeLineEnemy.lineTo      (this.rangeLineLengthEnemy, 0);
 
 
 
@@ -41,6 +41,9 @@ var statePlay = {
     },
 
     preRender:                      function(){
+
+        this.objectPlayer.UpdatePreRender();
+        console.log(this.objectPlayer.rangeLine.rotation + ' ' + this.objectPlayer.rangeLine.x + ' ' + this.objectPlayer.rangeLine.y + ' ' + this.objectPlayer.rangeLine.width);
 
         //A function to update range line (position, rotation, width).
         this.GraphicsUpdateRangeLine();
@@ -51,7 +54,7 @@ var statePlay = {
         this.graphicsRangeLineEnemy.x           = this.objectEnemy.x + (this.objectEnemy.width/2);
         this.graphicsRangeLineEnemy.y           = this.objectEnemy.y + (this.objectEnemy.height/2);
         this.graphicsRangeLineEnemy.rotation    = game.physics.arcade.angleToXY(this.graphicsRangeLineEnemy, this.objectPlayer.x, this.objectPlayer.y);
-        this.graphicsRangeLineEnemy.width       = this.rangeLineLength;
+        this.graphicsRangeLineEnemy.width       = this.rangeLineLengthEnemy;
 
 
 
@@ -127,7 +130,7 @@ var statePlay = {
             bullet.body.allowGravity    = false;
             bullet.anchor.setTo         (0.5, 0.5);
             bullet.reset                (this.objectPlayer.x + 16, this.objectPlayer.y + 16);
-            bullet.rotation             = game.physics.arcade.angleToPointer(this.graphicsRangeLine);
+            bullet.rotation             = game.physics.arcade.angleToPointer(this.objectPlayer.rangeLine);
 
             game.physics.arcade.moveToPointer(bullet, 600);
 
@@ -137,21 +140,25 @@ var statePlay = {
 
     GraphicsCreateRangeLine:        function(){
 
+        /*
         //this.rangeLineLength will be dependent to what weapon player equip.
         this.rangeLineLength                    = 100;
         this.graphicsRangeLine                  = game.add.graphics(this.objectPlayer.x, this.objectPlayer.y);
         this.graphicsRangeLine.lineStyle        (1, 0xDF7126, 1);
         this.graphicsRangeLine.moveTo           (0, 0);
         this.graphicsRangeLine.lineTo           (this.rangeLineLength, 0);
+        */
 
     },
 
     GraphicsUpdateRangeLine:        function(){
 
+        /*
         this.graphicsRangeLine.x                = this.objectPlayer.x + (this.objectPlayer.width/2);
         this.graphicsRangeLine.y                = this.objectPlayer.y + (this.objectPlayer.height/2);
         this.graphicsRangeLine.rotation         = game.physics.arcade.angleToPointer(this.graphicsRangeLine);
-        this.graphicsRangeLine.width            = this.rangeLineLength;
+        this.graphicsRangeLine.width            = this.rangeLineLength
+        */
 
     },
 
