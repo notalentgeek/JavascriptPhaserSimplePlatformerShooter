@@ -5,8 +5,8 @@ var statePlay = {
         game.physics.arcade.gravity.y       = 1200;
 
         this.tmMap                          = game.add.tilemap      ('Tilemap1');
-        this.tmMap.addTilesetImage          ('ImageTileset1',       'ImageTileset1');
-        this.tmMap.setCollisionByExclusion  ([0],  true,            'LayerBlock');
+        this.tmMap.addTilesetImage          ('ImageTileset1', 'ImageTileset1');
+        this.tmMap.setCollisionByExclusion  ([0], true, 'LayerBlock');
         this.layerBackground                = this.tmMap.createLayer('LayerBackground');
         this.layerBlock                     = this.tmMap.createLayer('LayerBlock');
 
@@ -17,48 +17,11 @@ var statePlay = {
         //A function to create bullet object in scene.
         this.ObjectCreateBullet();
         //A function to create player object in the scene.
-        this.ObjectCreatePlayer();
-
-        //A function to create range line graphics in scene.
-        this.GraphicsCreateRangeLine();
-
-
-
-        //PROTOTYPE ENEMY.
-        var findObjectEnemy                     = this.FindGameObjectsByType('LayerObject', this.tmMap, 'enemy');
-        this.objectEnemy                        = game.add.sprite(findObjectEnemy[0].x, findObjectEnemy[0].y, 'ImageEnemy');
-        this.objectEnemy.enableBody             = true;
-        game.physics.arcade.enable              (this.objectEnemy);
-        this.rangeLineLengthEnemy               = 100;
-        this.graphicsRangeLineEnemy             = game.add.graphics(this.objectEnemy.x, this.objectEnemy.y);
-        this.graphicsRangeLineEnemy.lineStyle   (1, 0xDF7126, 1);
-        this.graphicsRangeLineEnemy.moveTo      (0, 0);
-        this.graphicsRangeLineEnemy.lineTo      (this.rangeLineLengthEnemy, 0);
-
-
-
+        this.ObjectCreateCharacters();
 
     },
 
-    preRender:                      function(){
-
-        this.objectPlayer.UpdatePreRender();
-        console.log(this.objectPlayer.rangeLine.rotation + ' ' + this.objectPlayer.rangeLine.x + ' ' + this.objectPlayer.rangeLine.y + ' ' + this.objectPlayer.rangeLine.width);
-
-        //A function to update range line (position, rotation, width).
-        this.GraphicsUpdateRangeLine();
-
-
-
-        //PROTOTYPE ENEMY.
-        this.graphicsRangeLineEnemy.x           = this.objectEnemy.x + (this.objectEnemy.width/2);
-        this.graphicsRangeLineEnemy.y           = this.objectEnemy.y + (this.objectEnemy.height/2);
-        this.graphicsRangeLineEnemy.rotation    = game.physics.arcade.angleToXY(this.graphicsRangeLineEnemy, this.objectPlayer.x, this.objectPlayer.y);
-        this.graphicsRangeLineEnemy.width       = this.rangeLineLengthEnemy;
-
-
-
-    },
+    preRender:                      function(){ this.ObjectUpdatePreRenderCharacters(); },
 
     update:                         function(){
 
@@ -66,34 +29,19 @@ var statePlay = {
         this.CollisionObject();
         //A function to update bullet (range control, recycle, spawn).
         this.ObjectUpdateBullet();
+        //A function to update characters (movement, weapon range).
+        this.ObjectUpdateCharacters();
         //A function to handle objects overlap within the scene.
         this.OverlapObject();
-
-        //A function to update player (movement, weapon range).
-        this.objectPlayer.Update();
-
-
-
-        //PROTOTYPE ENEMY.
-
-
-
-
+        
 
     },
 
     CollisionObject:                function(){
 
+        game.physics.arcade.collide(this.objectEnemy,       this.layerBlock);
         game.physics.arcade.collide(this.objectPlayer,      this.layerBlock);
         game.physics.arcade.collide(this.objectGroupCoin,   this.layerBlock);
-
-
-
-        //PROTOTYPE ENEMY.
-        game.physics.arcade.collide(this.objectEnemy,       this.layerBlock);
-
-
-
 
     },
 
@@ -130,35 +78,11 @@ var statePlay = {
             bullet.body.allowGravity    = false;
             bullet.anchor.setTo         (0.5, 0.5);
             bullet.reset                (this.objectPlayer.x + 16, this.objectPlayer.y + 16);
-            bullet.rotation             = game.physics.arcade.angleToPointer(this.objectPlayer.rangeLine);
+            bullet.rotation             = game.physics.arcade.angleToPointer(this.objectPlayer.objectRangeLine);
 
             game.physics.arcade.moveToPointer(bullet, 600);
 
         }
-
-    },
-
-    GraphicsCreateRangeLine:        function(){
-
-        /*
-        //this.rangeLineLength will be dependent to what weapon player equip.
-        this.rangeLineLength                    = 100;
-        this.graphicsRangeLine                  = game.add.graphics(this.objectPlayer.x, this.objectPlayer.y);
-        this.graphicsRangeLine.lineStyle        (1, 0xDF7126, 1);
-        this.graphicsRangeLine.moveTo           (0, 0);
-        this.graphicsRangeLine.lineTo           (this.rangeLineLength, 0);
-        */
-
-    },
-
-    GraphicsUpdateRangeLine:        function(){
-
-        /*
-        this.graphicsRangeLine.x                = this.objectPlayer.x + (this.objectPlayer.width/2);
-        this.graphicsRangeLine.y                = this.objectPlayer.y + (this.objectPlayer.height/2);
-        this.graphicsRangeLine.rotation         = game.physics.arcade.angleToPointer(this.graphicsRangeLine);
-        this.graphicsRangeLine.width            = this.rangeLineLength
-        */
 
     },
 
@@ -226,13 +150,26 @@ var statePlay = {
 
     },
 
-    ObjectCreatePlayer:             function(){
+    ObjectCreateCharacters:        function(){
 
-        var findObjectsPlayer                   = this.FindGameObjectsByType('LayerObject', this.tmMap, 'player');
-        this.objectPlayer                       = new ObjectPlayer(findObjectsPlayer[0].x, findObjectsPlayer[0].y);
+        var findObjectEnemy                     = this.FindGameObjectsByType('LayerObject',     this.tmMap,                 'enemy');
+        var findObjectsPlayer                   = this.FindGameObjectsByType('LayerObject',     this.tmMap,                 'player');
+        this.objectEnemy                        = new ObjectCharacter(findObjectEnemy[0].x,     findObjectEnemy[0].y,       'ImageEnemy');
+        this.objectPlayer                       = new ObjectCharacter(findObjectsPlayer[0].x,   findObjectsPlayer[0].y,     'ImagePlayer');
 
     },
-    ObjectUpdatePlayer:             function(){  },
+    ObjectUpdateCharacters:         function(){
+
+        this.objectEnemy.   Update(false);
+        this.objectPlayer.  Update(true);
+
+    },
+    ObjectUpdatePreRenderCharacters:function(){
+
+        this.objectEnemy.   UpdatePreRender(game.physics.arcade.angleToXY       (this.objectEnemy.objectRangeLine, this.objectPlayer.x, this.objectPlayer.y     ));
+        this.objectPlayer.  UpdatePreRender(game.physics.arcade.angleToPointer  (this.objectPlayer.objectRangeLine                                              ));
+
+    },
 
     OverlapObject:                  function(){
 
