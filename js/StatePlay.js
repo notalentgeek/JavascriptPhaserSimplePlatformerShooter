@@ -156,12 +156,12 @@ var statePlay = {
         this.objectEnemy                        = new ObjectCharacter(findObjectEnemy[0].x,     findObjectEnemy[0].y,       'ImageEnemy');
         this.objectPlayer                       = new ObjectCharacter(findObjectsPlayer[0].x,   findObjectsPlayer[0].y,     'ImagePlayer');
 
-        this.behaviorControlKeyboardPlayer       = new BehaviorControlKeyboard(
+        var behaviorControlKeyboardPlayer       = new BehaviorControlKeyboard(
             this.objectPlayer,
             this.objectPlayer.velocityH,
             this.objectPlayer.velocityV
         );
-        this.objectPlayer.AddBehavior(this.behaviorControlKeyboardPlayer);
+        this.objectPlayer.AddBehavior(behaviorControlKeyboardPlayer);
 
     },
     ObjectUpdateCharacters:         function(){
