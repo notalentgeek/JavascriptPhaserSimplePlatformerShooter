@@ -27,13 +27,12 @@ var statePlay = {
 
         //A function to handle objects collision within the scene.
         this.CollisionObject();
-        //A function to update bullet (range control, recycle, spawn).
-        this.ObjectUpdateBullet();
         //A function to update characters (movement, weapon range).
         this.ObjectUpdateCharacters();
+        //A function to update bullet (range control, recycle, spawn).
+        this.ObjectUpdateBullet();
         //A function to handle objects overlap within the scene.
         this.OverlapObject();
-        
 
     },
 
@@ -157,11 +156,18 @@ var statePlay = {
         this.objectEnemy                        = new ObjectCharacter(findObjectEnemy[0].x,     findObjectEnemy[0].y,       'ImageEnemy');
         this.objectPlayer                       = new ObjectCharacter(findObjectsPlayer[0].x,   findObjectsPlayer[0].y,     'ImagePlayer');
 
+        this.behaviorControlKeyboardPlayer       = new BehaviorControlKeyboard(
+            this.objectPlayer,
+            this.objectPlayer.velocityH,
+            this.objectPlayer.velocityV
+        );
+        this.objectPlayer.AddBehavior(this.behaviorControlKeyboardPlayer);
+
     },
     ObjectUpdateCharacters:         function(){
 
-        this.objectEnemy.   Update(false);
-        this.objectPlayer.  Update(true);
+        this.objectEnemy.   Update();
+        this.objectPlayer.  Update();
 
     },
     ObjectUpdatePreRenderCharacters:function(){

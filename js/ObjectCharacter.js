@@ -1,10 +1,15 @@
 ObjectCharacter                             = function(_x, _y, _sprite){
 
-    ObjectPhysics.call                      (this, _x, _y, _sprite);
+    this.xPos                               = _x;
+    this.yPos                               = _y;
+    this.sprite                             = _sprite;
 
+    ObjectPhysics.call                      (this, this.xPos, this.yPos, this.sprite);
+
+    this.behaviorArray                      = new Array();
     this.objectRangeLine                    = new ObjectRangeLine(this, 100);
-    this.speed                              = 200;
-    this.speedJump                          = -500;
+    this.velocityH                          = 200;
+    this.velocityV                          = -500;
 
 };
 ObjectCharacter.prototype                   = Object.create(ObjectPhysics.prototype);
@@ -14,19 +19,21 @@ ObjectCharacter.prototype.UpdatePreRender   = function(_radian){
     this.objectRangeLine.UpdatePreRender    (_radian);  
 
 };
-ObjectCharacter.prototype.Update            = function(_isPlayer){
+ObjectCharacter.prototype.Update            = function(){
 
-    if(_isPlayer){
-        if      (game.input.keyboard.isDown(Phaser.Keyboard.A))     { this.body.velocity.x = this.speed*-1; }
-        else if (game.input.keyboard.isDown(Phaser.Keyboard.D))     { this.body.velocity.x = this.speed;    }
-        else                                                        { this.body.velocity.x = 0;             }
+    for(var i = 0; i < this.behaviorArray.length; i ++){
 
-        if(
+        if(this.behaviorArray[i].Update()   != null){
 
-            game.input.keyboard.isDown(Phaser.Keyboard.W) &&
-            this.body.onFloor()
+            this.behaviorArray[i].Update();
 
-        ){ this.body.velocity.y = this.speedJump; }
+        }
+
     }
+
+};
+ObjectCharacter.prototype.AddBehavior       = function(_behavior){
+
+    this.behaviorArray.push(_behavior);
 
 };
