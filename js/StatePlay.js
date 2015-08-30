@@ -77,7 +77,7 @@ var statePlay = {
             bullet.body.allowGravity    = false;
             bullet.anchor.setTo         (0.5, 0.5);
             bullet.reset                (this.objectPlayer.x + 16, this.objectPlayer.y + 16);
-            bullet.rotation             = game.physics.arcade.angleToPointer(this.objectPlayer.objectRangeLine);
+            bullet.rotation             = game.physics.arcade.angleToPointer(this.objectPlayer.behaviorRangeLine);
 
             game.physics.arcade.moveToPointer(bullet, 600);
 
@@ -151,23 +151,29 @@ var statePlay = {
 
     ObjectCreateCharacters:        function(){
 
-        var findObjectEnemy                     = this.FindGameObjectsByType('LayerObject',     this.tmMap,                 'enemy');
-        var findObjectsPlayer                   = this.FindGameObjectsByType('LayerObject',     this.tmMap,                 'player');
-        this.objectEnemy                        = new ObjectCharacter(findObjectEnemy[0].x,     findObjectEnemy[0].y,       'ImageEnemy');
-        this.objectPlayer                       = new ObjectCharacter(findObjectsPlayer[0].x,   findObjectsPlayer[0].y,     'ImagePlayer');
-        this.objectPlayer.behaviorControlKeyboard.active = true;
-        
+        var findObjectEnemy                                 = this.FindGameObjectsByType('LayerObject',     this.tmMap,                 'enemy');
+        this.objectEnemy                                    = new ObjectCharacter(findObjectEnemy[0].x,     findObjectEnemy[0].y,       'ImageEnemy');
+        this.objectEnemy.behaviorRangeLineRadian.active     = true;
+
+        var findObjectsPlayer                               = this.FindGameObjectsByType('LayerObject',     this.tmMap,                 'player');
+        this.objectPlayer                                   = new ObjectCharacter(findObjectsPlayer[0].x,   findObjectsPlayer[0].y,     'ImagePlayer');
+        this.objectPlayer.behaviorControlKeyboard.active    = true;
+        this.objectPlayer.behaviorRangeLineRadian.active    = true;
+
     },
     ObjectUpdateCharacters:         function(){
 
-        this.objectEnemy.   Update();
-        this.objectPlayer.  Update();
+        this.objectEnemy.Update();
+        this.objectEnemy.behaviorRangeLineRadian    = game.physics.arcade.angleToXY       (this.objectEnemy.behaviorRangeLine.graphicsRangeLine, this.objectPlayer.x, this.objectPlayer.y     );
+
+        this.objectPlayer.Update();
+        this.objectPlayer.behaviorRangeLineRadian   = game.physics.arcade.angleToPointer  (this.objectPlayer.behaviorRangeLine.graphicsRangeLine                                              );
 
     },
     ObjectUpdatePreRenderCharacters:function(){
 
-        this.objectEnemy.   UpdatePreRender(game.physics.arcade.angleToXY       (this.objectEnemy.objectRangeLine, this.objectPlayer.x, this.objectPlayer.y     ));
-        this.objectPlayer.  UpdatePreRender(game.physics.arcade.angleToPointer  (this.objectPlayer.objectRangeLine                                              ));
+        this.objectEnemy.   UpdatePreRender();
+        this.objectPlayer.  UpdatePreRender();
 
     },
 
