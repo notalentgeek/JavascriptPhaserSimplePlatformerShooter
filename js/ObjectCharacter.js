@@ -6,10 +6,11 @@ ObjectCharacter                             = function(_x, _y, _sprite){
 
     ObjectPhysics.call                      (this, this.xPos, this.yPos, this.sprite);
 
-    this.behaviorArray                      = new Array();
     this.objectRangeLine                    = new ObjectRangeLine(this, 100);
     this.velocityH                          = 200;
     this.velocityV                          = -500;
+
+    this.behaviorControlKeyboard            = new BehaviorControlKeyboard(this, this.velocityH, this.velocityV);
 
 };
 ObjectCharacter.prototype                   = Object.create(ObjectPhysics.prototype);
@@ -21,19 +22,11 @@ ObjectCharacter.prototype.UpdatePreRender   = function(_radian){
 };
 ObjectCharacter.prototype.Update            = function(){
 
-    for(var i = 0; i < this.behaviorArray.length; i ++){
-
-        if(this.behaviorArray[i].Update()   != null){
-
-            this.behaviorArray[i].Update();
-
-        }
-
-    }
-
-};
-ObjectCharacter.prototype.AddBehavior       = function(_behavior){
-
-    this.behaviorArray.push(_behavior);
+    this.behaviorControlKeyboard.Update     (
+        game.input.keyboard.isDown(Phaser.Keyboard.A),
+        game.input.keyboard.isDown(Phaser.Keyboard.D),
+        game.input.keyboard.isDown(Phaser.Keyboard.S),
+        game.input.keyboard.isDown(Phaser.Keyboard.W)
+    );
 
 };

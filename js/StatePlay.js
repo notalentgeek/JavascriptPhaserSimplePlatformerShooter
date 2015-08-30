@@ -155,14 +155,8 @@ var statePlay = {
         var findObjectsPlayer                   = this.FindGameObjectsByType('LayerObject',     this.tmMap,                 'player');
         this.objectEnemy                        = new ObjectCharacter(findObjectEnemy[0].x,     findObjectEnemy[0].y,       'ImageEnemy');
         this.objectPlayer                       = new ObjectCharacter(findObjectsPlayer[0].x,   findObjectsPlayer[0].y,     'ImagePlayer');
-
-        var behaviorControlKeyboardPlayer       = new BehaviorControlKeyboard(
-            this.objectPlayer,
-            this.objectPlayer.velocityH,
-            this.objectPlayer.velocityV
-        );
-        this.objectPlayer.AddBehavior(behaviorControlKeyboardPlayer);
-
+        this.objectPlayer.behaviorControlKeyboard.active = true;
+        
     },
     ObjectUpdateCharacters:         function(){
 
