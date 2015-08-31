@@ -4,6 +4,8 @@ var statePlay = {
 
         game.physics.arcade.gravity.y       = 1200;
 
+        this.systemCollisionGroup           = new SystemCollisionGroup();
+
         this.tmMap                          = game.add.tilemap      ('Tilemap1');
         this.tmMap.addTilesetImage          ('ImageTileset1', 'ImageTileset1');
         this.tmMap.setCollisionByExclusion  ([0], true, 'LayerBlock');
@@ -33,6 +35,8 @@ var statePlay = {
         this.ObjectUpdateBullet();
         //A function to handle objects overlap within the scene.
         this.OverlapObject();
+
+        this.systemCollisionGroup.Update();
 
     },
 
@@ -69,17 +73,22 @@ var statePlay = {
 
     FireBullet:                     function(){
 
-        if (game.time.now > this.bulletNextFire && this.objectGroupBullet.countDead() > 0){
+        if (game.time.now > this.bulletNextFire && this.objectGroupBulletPlayer.countDead() > 0){
 
-            this.bulletNextFire         = game.time.now + this.bulletFireRate;
+            this.bulletNextFire                     = game.time.now + this.bulletFireRate;
 
-            var bullet                  = this.objectGroupBullet.getFirstDead();
-            bullet.body.allowGravity    = false;
-            bullet.anchor.setTo         (0.5, 0.5);
-            bullet.reset                (this.objectPlayer.x + 16, this.objectPlayer.y + 16);
-            bullet.rotation             = game.physics.arcade.angleToPointer(this.objectPlayer.behaviorRangeLine);
+            var bullet                              = this.objectGroupBulletPlayer.getFirstDead();
+            bullet.body.allowGravity                = false;
+            bullet.anchor.setTo                     (0.5, 0.5);
+            bullet.reset                            (this.objectPlayer.x + 16, this.objectPlayer.y + 16);
+            bullet.rotation                         = game.physics.arcade.angleToPointer(this.objectPlayer.behaviorRangeLine.graphicsRangeLine);
 
-            game.physics.arcade.moveToPointer(bullet, 600);
+            game.physics.arcade.moveToPointer       (bullet, 600);
+            this.systemCollisionGroup.AddToGroup    (
+                this.systemCollisionGroup.objectGroupBulletFriendly,
+                this.systemCollisionGroup.objectGroupBulletFriendlyPrev,
+                bullet
+            );
 
         }
 
@@ -99,15 +108,15 @@ var statePlay = {
 
         //this.bulletButtonPressed is a variable to control mouse button 'justPressed'.
         //As far as I know, there is no 'justPressed' boolean built inside Phaser.
-        this.bulletButtonPressed                = true;
-        this.bulletFireRate                     = 100;
-        this.bulletNextFire                     = 0;
-        this.objectGroupBullet                  = game.add.group();
-        this.objectGroupBullet.createMultiple   (50, 'ImageBullet');
-        this.objectGroupBullet.setAll           ('checkWorldBounds', true);
-        this.objectGroupBullet.setAll           ('outOfBoundsKill', true);
-        game.physics.arcade.enable              (this.objectGroupBullet);
-        this.objectGroupBullet.enableBody       = true;
+        this.bulletButtonPressed                        = true;
+        this.bulletFireRate                             = 100;
+        this.bulletNextFire                             = 0;
+        this.objectGroupBulletPlayer                    = game.add.group();
+        this.objectGroupBulletPlayer.createMultiple     (50, 'ImageBullet');
+        this.objectGroupBulletPlayer.setAll             ('checkWorldBounds', true);
+        this.objectGroupBulletPlayer.setAll             ('outOfBoundsKill', true);
+        this.objectGroupBulletPlayer.enableBody         = true;
+        game.physics.arcade.enable                      (this.objectGroupBulletPlayer);
 
     },
     ObjectUpdateBullet:             function(){
@@ -123,13 +132,26 @@ var statePlay = {
         var playerX             = this.objectPlayer.x + 16;
         var playerY             = this.objectPlayer.y + 16;
 
-        this.objectGroupBullet.forEachExists(
+        var removeThisBullet;
+
+        this.objectGroupBulletPlayer.forEachExists(
             function(_bullet){
 
-                var distance            = Math.sqrt(Math.pow((playerX - _bullet.x), 2) + Math.pow((playerY - _bullet.y), 2));
-                if(distance >= 100)     { _bullet.kill(); }
+                var distance                        = Math.sqrt(Math.pow((playerX - _bullet.x), 2) + Math.pow((playerY - _bullet.y), 2));
+                if(distance >= 100)                 {
+
+                    removeThisBullet                = _bullet;
+                    _bullet.kill();
+
+                }
 
             }
+        );
+
+        this.systemCollisionGroup.RemoveFromGroup   (
+            this.systemCollisionGroup.objectGroupBulletFriendly,
+            this.systemCollisionGroup.objectGroupBulletFriendlyPrev,
+            removeThisBullet
         );
 
     },
