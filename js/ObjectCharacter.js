@@ -1,15 +1,14 @@
-ObjectCharacter                             = function(_x, _y, _sprite){
+ObjectCharacter                             = function(_x, _y, _sprite, _systemCollisionGroup){
 
-    this.xPos                               = _x;
-    this.yPos                               = _y;
-    this.sprite                             = _sprite;
-
-    ObjectPhysics.call                      (this, this.xPos, this.yPos, this.sprite);
+    ObjectPhysics.call                      (this, _x, _y, _sprite);
 
     this.velocityH                          = 200;
     this.velocityV                          = -500;
-
     this.behaviorControlKeyboard            = new BehaviorControlKeyboard   (this, this.velocityH, this.velocityV);
+
+    this.bulletFireRate                     = 100;
+    this.bulletSpeed                        = 600;
+    this.behaviorFireBullet                 = new BehaviorFireBullet        (this.bulletFireRate, this.bulletSpeed, 'ImageBullet', _systemCollisionGroup);
 
     this.behaviorRangeLineLength            = 100;
     this.behaviorRangeLineRadian            = 0;
@@ -31,5 +30,7 @@ ObjectCharacter.prototype.Update            = function(){
         game.input.keyboard.isDown(Phaser.Keyboard.S),
         game.input.keyboard.isDown(Phaser.Keyboard.W)
     );
+
+    this.behaviorFireBullet.Update          (this);
 
 };
