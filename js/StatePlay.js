@@ -43,18 +43,18 @@ var statePlay = {
 
     update                      : function(){
 
+        /*PENDING: Put these two functions into SystemCollisionGroup 'class'.
+        A function to handle objects collision within the scene.*/
+        this.ObjectsCollision       ();
+        //A function to handle objects overlap within the scene.
+        this.ObjectsOverlap         ();
+
         //Update enemies and all of their necessary properties.
         this.objectEnemy.Update     ();
         this.objectEnemy.behaviorRangeLineRadian    = game.physics.arcade.angleToXY       (this.objectEnemy.behaviorRangeLine.graphicsRangeLine, this.objectPlayer.x, this.objectPlayer.y     );
         //Update the player and all of its necessary properties.
         this.objectPlayer.Update    ();
         this.objectPlayer.behaviorRangeLineRadian   = game.physics.arcade.angleToPointer  (this.objectPlayer.behaviorRangeLine.graphicsRangeLine                                              );
-
-        /*PENDING: Put these two functions into SystemCollisionGroup 'class'.
-        A function to handle objects collision within the scene.*/
-        this.ObjectsCollision       ();
-        //A function to handle objects overlap within the scene.
-        this.ObjectsOverlap         ();
 
         this.systemCollisionGroup.Update();
 
