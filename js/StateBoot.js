@@ -1,6 +1,6 @@
 var stateBoot = {
 
-	init: function(){
+    init: function(){
 
         this.input.maxPointers              = 1;
         this.stage.disableVisibilityChange  = true;
@@ -11,8 +11,8 @@ var stateBoot = {
     create: function(){
 
         game.physics.startSystem(Phaser.Physics.ARCADE);
-        game.smoothed 			= false;
-        game.state.start 		('StatePreload');
+        game.smoothed           = false;
+        game.state.start        ('StatePreload');
 
     }
 
